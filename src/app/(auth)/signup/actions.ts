@@ -11,6 +11,7 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+// TODO: Support email verification and password reset
 export async function signup(config: SignUpConfig): Promise<{ error: string }> {
   try {
     // Extra validation on the server, as the user can bypass the client-side validation.
@@ -74,6 +75,8 @@ export async function signup(config: SignUpConfig): Promise<{ error: string }> {
      * The redirect throws a error called isRedirectError, which is caught by the error handler.
      * Funny thing is that we won't be redirected if we don't handle this error. We would need to
      * throw the error again to be redirected.
+     *
+     *  * You can try commenting out the if block and see what happens. You will see the "An error occurred while signing up" message, and user won't be redirected.
      *
      * ! MUST READ: https://nextjs.org/docs/app/api-reference/functions/redirect.. This says:
      *      In Server Actions and Route Handlers, redirect should be called after the try/catch block.
