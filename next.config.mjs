@@ -17,6 +17,17 @@ const nextConfig = {
       dynamic: 30, // 30 seconds
     },
   },
+  /**
+   * ? Why would you need serverExternalPackages?
+   * This is essential when you want to use native Node.js modules in your Next.js application.
+   * By default, Next.js does not support native Node.js modules, but you can enable them by
+   * adding the serverExternalPackages configuration.
+   *
+   * ! what's argon2?
+   * Argon2 is a password-hashing function.
+   * ? More: https://www.npmjs.com/package/@node-rs/argon2
+   */
+  serverExternalPackages: ["@node-rs/argon2"],
 };
 
 export default nextConfig;
