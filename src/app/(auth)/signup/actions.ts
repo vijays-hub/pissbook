@@ -1,7 +1,7 @@
 // Server Actions File.
 "use server";
 
-import { luciaAuth } from "@/auth";
+import { createSessionFromUserId, luciaAuth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { SignUpConfig, signupSchema } from "@/lib/validations";
 import { hashingConfig } from "@/utils/constants";
@@ -65,15 +65,7 @@ export async function signup(config: SignUpConfig): Promise<{ error: string }> {
     });
 
     // We would have to log in the user after he signs up. The goal is to avoid the user from having to log in after signing up.
-    // TODO: Find a common place to store the session creation logic
-    const session = await luciaAuth.createSession(userId, {});
-    const sessionCookie = luciaAuth.createSessionCookie(session.id);
-
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes
-    );
+    createSessionFromUserId(userId);
 
     // Take the user to the home page
     redirect("/"); // Since redirect returns "never", we don't need to return the error object required by the function.

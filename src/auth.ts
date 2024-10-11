@@ -1,7 +1,7 @@
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 import prisma from "./lib/prisma";
-import { Lucia, Session, User } from "lucia";
-import { cache } from "react";
+import { Cookie, Lucia, Session, User } from "lucia";
+import { cache, use } from "react";
 import { cookies } from "next/headers";
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
@@ -75,23 +75,30 @@ export const validateRequest = cache(
     try {
       if (result.session && result.session.fresh) {
         const sessionCookie = luciaAuth.createSessionCookie(result.session.id);
-        cookies().set(
-          sessionCookie.name,
-          sessionCookie.value,
-          sessionCookie.attributes
-        );
+        storeCookieInHeaders(sessionCookie);
       }
 
       if (!result.session) {
         const sessionCookie = luciaAuth.createBlankSessionCookie();
-        cookies().set(
-          sessionCookie.name,
-          sessionCookie.value,
-          sessionCookie.attributes
-        );
+        storeCookieInHeaders(sessionCookie);
       }
     } catch (error) {}
 
     return result;
   }
 );
+
+export const createSessionFromUserId = async (userId: string) => {
+  const session = await luciaAuth.createSession(userId, {});
+  const sessionCookie = luciaAuth.createSessionCookie(session.id);
+
+  storeCookieInHeaders(sessionCookie);
+};
+
+export const storeCookieInHeaders = (sessionCookie: Cookie) => {
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
+  );
+};
