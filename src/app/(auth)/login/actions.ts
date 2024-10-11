@@ -6,7 +6,8 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { verify } from "@node-rs/argon2";
 import { redirect } from "next/navigation";
 import { hashingConfig } from "@/utils/constants";
-import { createSessionFromUserId } from "@/lib/utils";
+import { luciaAuth } from "@/auth";
+import { cookies } from "next/headers";
 
 export async function login(
   credentials: LoginConfig
@@ -52,7 +53,15 @@ export async function login(
       };
     }
 
-    createSessionFromUserId(existingUser.id);
+    // TODO: Find a common place to store the session creation logic
+    const session = await luciaAuth.createSession(existingUser.id, {});
+    const sessionCookie = luciaAuth.createSessionCookie(session.id);
+
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes
+    );
 
     redirect("/");
   } catch (error) {
