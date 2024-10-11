@@ -2,8 +2,10 @@
 "use server";
 
 import { luciaAuth } from "@/auth";
+import { createSessionFromUserId } from "@/lib/utils";
 import prisma from "@/lib/prisma";
 import { SignUpConfig, signupSchema } from "@/lib/validations";
+import { hashingConfig } from "@/utils/constants";
 import { hash } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
 import { isRedirectError } from "next/dist/client/components/redirect";
@@ -18,12 +20,7 @@ export async function signup(config: SignUpConfig): Promise<{ error: string }> {
     // Now the values are validated and safe to use.
 
     // https://www.npmjs.com/package/@node-rs/argon2
-    const passwordHash = await hash(password, {
-      memoryCost: 19456, // The amount of memory to be used by the hash function, in kilobytes
-      timeCost: 2, // The time cost is the amount of passes (iterations) used by the hash function. It increases hash strength at the cost of time required to compute.
-      outputLen: 32, // The length of the hash in bytes
-      parallelism: 1, // The number of threads to use
-    });
+    const passwordHash = await hash(password, hashingConfig);
 
     // https://lucia-auth.com/reference/main/generateIdFromEntropySize
     const userId = generateIdFromEntropySize(10); // 16-characters long
@@ -69,15 +66,7 @@ export async function signup(config: SignUpConfig): Promise<{ error: string }> {
     });
 
     // We would have to log in the user after he signs up. The goal is to avoid the user from having to log in after signing up.
-    const session = await luciaAuth.createSession(userId, {});
-    const sessionCookie = luciaAuth.createSessionCookie(session.id);
-
-    // Set the session cookie for the user
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes
-    );
+    createSessionFromUserId(userId);
 
     // Take the user to the home page
     redirect("/"); // Since redirect returns "never", we don't need to return the error object required by the function.
