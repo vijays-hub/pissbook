@@ -6,7 +6,8 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { verify } from "@node-rs/argon2";
 import { redirect } from "next/navigation";
 import { hashingConfig } from "@/utils/constants";
-import { createSessionFromUserId } from "@/auth";
+import { createSessionFromUserId, luciaAuth } from "@/auth";
+import { cookies } from "next/headers";
 
 export async function login(
   credentials: LoginConfig
@@ -52,7 +53,15 @@ export async function login(
       };
     }
 
-    createSessionFromUserId(existingUser.id);
+    // TODO: Figure out why cookies won't be set using a common function (createSessionFromUserId)
+    const session = await luciaAuth.createSession(existingUser.id, {});
+    const sessionCookie = luciaAuth.createSessionCookie(session.id);
+
+    cookies().set(
+      sessionCookie.name,
+      sessionCookie.value,
+      sessionCookie.attributes
+    );
 
     redirect("/");
   } catch (error) {
