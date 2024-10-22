@@ -3,6 +3,7 @@
 import { validateRequest } from "@/auth";
 import { redirect } from "next/navigation";
 import SessionProvider from "./SessionProvider";
+import Navbar from "./Navbar";
 
 export default async function Layout({
   children,
@@ -26,5 +27,12 @@ export default async function Layout({
    * ! NOTE: Even though the SessionProvider is a client component, we can still use
    * ! server components as Children. Props to Next.js for making this possible.
    */
-  return <SessionProvider value={session}>{children}</SessionProvider>;
+  return (
+    <SessionProvider value={session}>
+      <div className="flex min-h-screen flex-col">
+        <Navbar />
+        <div className="mx-auto max-w-7xl p-5">{children}</div>
+      </div>
+    </SessionProvider>
+  );
 }
