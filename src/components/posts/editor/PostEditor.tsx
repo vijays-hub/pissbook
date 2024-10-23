@@ -48,7 +48,7 @@ export default function PostEditor() {
 
         <EditorContent
           editor={editor}
-          className="w-full min-h-[5rem] max-h-[20rem] overflow-y-auto bg-background rounded-2xl px-5 py-3"
+          className="w-full max-h-[20rem] overflow-y-auto bg-background rounded-2xl px-5 py-3"
         />
       </div>
 
