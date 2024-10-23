@@ -61,6 +61,7 @@ export async function signup(config: SignUpConfig): Promise<{ error: string }> {
         id: userId,
         email,
         username,
+        displayName: username,
         passwordHash,
       },
     });
