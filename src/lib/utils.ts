@@ -46,3 +46,12 @@ export function formatRelativeDate(from: Date) {
 export const getSanitizedDisplayName = (displayName: string) => {
   return displayName.split(/[_-]/).join(" ");
 };
+
+export function formatNumber(num: number) {
+  // Format the number using the Intl.NumberFormat API with compact notation
+  // This will convert large numbers into a more readable format, e.g., 1,200 becomes 1.2K
+  return Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(num);
+}
