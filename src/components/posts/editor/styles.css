@@ -1,0 +1,14 @@
+/* Ref: https://tiptap.dev/docs/editor/extensions/functionality/placeholder#placeholder */
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: theme("colors.muted.foreground");
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Hide the weird outline when we focus on the editor */
+.tiptap.ProseMirror {
+  outline: none;
+}
