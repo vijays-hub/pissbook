@@ -1,14 +1,16 @@
 import { Prisma } from "@prisma/client";
 
+export const userDataSelect = {
+  id: true,
+  username: true,
+  displayName: true,
+  avatarUrl: true,
+} satisfies Prisma.UserSelect;
+
 export const postDataInclude = {
   // Add more fields as needed
   user: {
-    select: {
-      // Include more data as needed
-      username: true,
-      displayName: true,
-      avatarUrl: true,
-    },
+    select: userDataSelect,
   },
 } satisfies Prisma.PostInclude; // Explore more on "satisfies" keyword in TypeScript -- https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator
 
