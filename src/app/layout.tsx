@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.className} ${geistMono.className}`}>
         {/* 
         
         The common pattern for dark theme implementation is setting a class on the html/body element.
