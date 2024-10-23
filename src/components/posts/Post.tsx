@@ -29,6 +29,20 @@ interface PostConfig {
   post: PostData;
 }
 
+/**
+ * As of 23rd Oct, 2024 - we are using the username as the display name for the user.
+ * The username could have underscores or hyphens. So, when we are displaying the
+ * display name, we will remove these special characters. We will use CSS styles to
+ * capitalize the first letter of each word. So let this function be a simple one.
+ *
+ * ! TODO - Update the regex if we allow more special characters in the username.
+ *
+ * ! TIP - If needed, move this to an utility function.
+ */
+const getSanitizedDisplayName = (displayName: string) => {
+  return displayName.split(/[_-]/).join(" ");
+};
+
 export default function Post({ post }: PostConfig) {
   return (
     <article className="space-y-3 bg-card rounded-2xl p-5 shadow-sm">
@@ -42,7 +56,7 @@ export default function Post({ post }: PostConfig) {
             href={`/users/${post.user.username}`}
             className="block font-medium hover:underline capitalize"
           >
-            {post.user.displayName}
+            {getSanitizedDisplayName(post.user.displayName)}
           </Link>
           <Link
             href={`/posts/${post.id}`}
