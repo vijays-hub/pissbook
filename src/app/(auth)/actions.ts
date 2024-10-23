@@ -2,8 +2,8 @@
 
 "use server";
 
-import { luciaAuth, validateRequest } from "@/auth";
-import { setCookiesInHeaders } from "@/lib/utils";
+import { luciaAuth, storeCookieInHeaders, validateRequest } from "@/auth";
+
 import { redirect } from "next/navigation";
 
 // Does not return anything since this is logging out!
@@ -20,7 +20,7 @@ export async function logout() {
   //   https://lucia-auth.com/reference/main/Lucia/createBlankSessionCookie
   const sessionCookie = luciaAuth.createBlankSessionCookie();
 
-  setCookiesInHeaders(sessionCookie);
+  storeCookieInHeaders(sessionCookie);
 
   //   If you have a custom public page (probably a landing page), you can redirect to it as well. But for now, we'll just redirect to the login page!
   redirect("/login");
