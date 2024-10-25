@@ -48,7 +48,14 @@ export default function Post({ post }: PostConfig) {
             href={`/posts/${post.id}`}
             className="block text-sm text-muted-foreground hover:underline"
           >
-            {formatRelativeDate(post.createdAt)}
+            {/* TEMP: Commenting this out for time being. When we return the posts data from the 
+                      endpoint we made today (posts/for-you), we will have the createdAt field 
+                      in string format as Response.JSON converts the Date object to string.
+
+                We'll fix this shortly.
+            
+            */}
+            {/* {formatRelativeDate(post.createdAt)} */}
           </Link>
         </div>
       </div>
