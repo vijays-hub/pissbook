@@ -52,10 +52,10 @@ export default function Post({ post }: PostConfig) {
                       endpoint we made today (posts/for-you), we will have the createdAt field 
                       in string format as Response.JSON converts the Date object to string.
 
-                We'll fix this shortly.
+                We'll fix this shortly. -- Solved it using kyInstance in src/lib/ky.ts
             
             */}
-            {/* {formatRelativeDate(post.createdAt)} */}
+            {formatRelativeDate(post.createdAt)}
           </Link>
         </div>
       </div>
