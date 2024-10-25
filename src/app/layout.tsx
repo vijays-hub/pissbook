@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import ReactQueryClientProvider from "./ReactQueryClientProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,7 +30,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.className} ${geistMono.className}`}>
-        {/* 
+        <ReactQueryClientProvider>
+          {/* 
         
         The common pattern for dark theme implementation is setting a class on the html/body element.
         This class is then used to apply different styles based on the theme. The ThemeProvider
@@ -57,14 +59,15 @@ export default function RootLayout({
 
         ! Know more on NextJs Dark theme - https://ui.shadcn.com/docs/dark-mode/next
         */}
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </ReactQueryClientProvider>
       </body>
     </html>
   );
