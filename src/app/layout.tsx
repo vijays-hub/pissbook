@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import ReactQueryClientProvider from "./ReactQueryClientProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -68,6 +69,7 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
         </ReactQueryClientProvider>
+        <Toaster />
       </body>
     </html>
   );
