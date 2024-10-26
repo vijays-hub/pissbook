@@ -19,7 +19,7 @@ export async function GET(
     const { user: loggedInUser } = await validateRequest();
 
     if (!loggedInUser) {
-      return new Response("Unauthorized", { status: 401 });
+      return Response.json("Unauthorized", { status: 401 });
     }
 
     // Fetch the user from the database using the userId
@@ -53,7 +53,7 @@ export async function GET(
     });
 
     if (!user) {
-      return new Response("User not found", { status: 404 });
+      return Response.json("User not found", { status: 404 });
     }
 
     const data: FollowerInfo = {
@@ -65,7 +65,7 @@ export async function GET(
     return Response.json(data);
   } catch (error) {
     console.error(error);
-    return new Response("Internal server error", { status: 500 });
+    return Response.json("Internal server error", { status: 500 });
   }
 }
 
@@ -81,7 +81,7 @@ export async function POST(
     const { user: loggedInUser } = await validateRequest();
 
     if (!loggedInUser) {
-      return new Response("Unauthorized", { status: 401 });
+      return Response.json("Unauthorized", { status: 401 });
     }
 
     /**
@@ -107,10 +107,10 @@ export async function POST(
       update: {},
     });
 
-    return new Response("Success", { status: 200 });
+    return Response.json("Success", { status: 200 });
   } catch (error) {
     console.error(error);
-    return new Response("Internal server error", { status: 500 });
+    return Response.json("Internal server error", { status: 500 });
   }
 }
 
@@ -128,7 +128,7 @@ export async function DELETE(
     const { user: loggedInUser } = await validateRequest();
 
     if (!loggedInUser) {
-      return new Response("Unauthorized", { status: 401 });
+      return Response.json("Unauthorized", { status: 401 });
     }
 
     /**
@@ -149,9 +149,9 @@ export async function DELETE(
       },
     });
 
-    return new Response("Success", { status: 200 });
+    return Response.json("Success", { status: 200 });
   } catch (error) {
     console.error(error);
-    return new Response("Internal server error", { status: 500 });
+    return Response.json("Internal server error", { status: 500 });
   }
 }
