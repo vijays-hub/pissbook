@@ -46,8 +46,8 @@ export default function ForYouFeed() {
   });
 
   /**
-   * 'data' object looks like this:
-   * { pages: [{ posts: PostData[], nextCursor: string | null }], pageParams: string[] }
+   * 'data' object looks like this: (Initially only one object will be present, but as we scroll, more objects will be added to the pages array)
+   * { pages: [{ posts: PostData[], nextCursor: string | null }, ...], pageParams: string[] }
    *
    * So we need to flatten the 'pages' array to get all the posts.
    *
