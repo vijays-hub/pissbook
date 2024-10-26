@@ -68,3 +68,43 @@ export async function GET(
     return new Response("Internal server error", { status: 500 });
   }
 }
+
+/**
+ * An endpoint to follow a user. The currently logged in user would follow the user whose id is
+ * passed in the URL. The currently logged in user is determined by validateRequest function.
+ */
+export async function POST(
+  req: Request,
+  { params: { userId } }: { params: { userId: string } }
+) {
+  const { user: loggedInUser } = await validateRequest();
+
+  if (!loggedInUser) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  /**
+   * We have used upsert method instead of create. This is because, if the user is already following
+   * the user, then we don't want to create a new record. Instead, we would just update the existing
+   * record. If the user is not following the user, then we would create a new record.
+   *
+   * More on upsert: https://www.prisma.io/docs/orm/prisma-client/queries/crud#update-or-create-records
+   */
+  await prisma.follow.upsert({
+    where: {
+      // This is the unique constraint we defined in the Prisma schema for Follow model.
+      followerId_followingId: {
+        followerId: loggedInUser.id,
+        followingId: userId,
+      },
+    },
+    create: {
+      followerId: loggedInUser.id,
+      followingId: userId,
+    },
+    // We are ignoring the update object because we don't need to update anything, as we are just following the user.
+    update: {},
+  });
+
+  return new Response("Success", { status: 200 });
+}
