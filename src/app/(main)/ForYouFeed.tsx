@@ -2,6 +2,7 @@
 
 import InfiniteScrollContainer from "@/components/InfiniteScrollContainer";
 import Post from "@/components/posts/Post";
+import PostsLoadingSkeleton from "@/components/posts/PostsLoadingSkeleton";
 import kyInstance from "@/lib/ky";
 import { PostsPage } from "@/lib/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -61,7 +62,17 @@ export default function ForYouFeed() {
   const posts = data?.pages.flatMap((page) => page.posts) ?? [];
 
   if (status === "pending") {
-    return <Loader2 className="mx-auto animate-spin" />;
+    return <PostsLoadingSkeleton />;
+  }
+
+  // When there are no posts and there are no more posts to fetch, we can show a message.
+  if (status === "success" && posts.length === 0 && !hasNextPage) {
+    return (
+      <p className="text-center text-sm text-muted-foreground">
+        No one pissed around yet! Be the first one to piss around and share your
+        thoughts.
+      </p>
+    );
   }
 
   if (status === "error") {
@@ -78,6 +89,7 @@ export default function ForYouFeed() {
         <Post key={post.id} post={post} />
       ))}
 
+      {/* No need of skeleton here! Usually that's meant only for initial load. */}
       {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
     </InfiniteScrollContainer>
   );
