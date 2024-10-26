@@ -6,3 +6,7 @@ legacy peer deps -> https://medium.com/@neelendra1destiny/what-is-the-difference
 - Understanding "use client" in Next.js - https://dev.to/brdnicolas/understanding-use-client-in-nextjs-enhancing-performance-through-client-side-component-mastery-10dg
 
 - Clean way of setting dark theme in Next.js - https://ui.shadcn.com/docs/dark-mode/next
+
+- Prisma way of handling relations between models (Tables) - https://www.prisma.io/docs/orm/prisma-schema/data-model/relations
+
+- Refresh on SQL relations - https://www.geeksforgeeks.org/relationships-in-sql-one-to-one-one-to-many-many-to-many/
