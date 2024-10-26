@@ -27,6 +27,15 @@ model User {
   sessions     Session[]
   Post         Post[]
 
+  /// `following` represents the list of users this user is following.
+  /// Using `@relation("Followers")` indicates that this user is the follower
+  /// in these relationships.
+  following Follow[] @relation("Followers")
+
+  /// `followers` represents the list of users following this user.
+  /// Using `@relation("Following")` indicates that this user is the one being followed.
+  followers Follow[] @relation("Following")
+
   createdAt DateTime @default(now())
 
   @@map("users") // we don't want the table to be called "User" in the database, instead we want it to be called "users"
@@ -41,6 +50,47 @@ model Session {
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+model Follow {
+  /// `followerId` represents the ID of the user who is following another user.
+  /// It serves as a foreign key linking this record to a specific `User`.
+  followerId String
+
+  /// The `follower` field establishes a relation to the `User` model
+  /// representing the user who is doing the following.
+  /// This uses the "Followers" relation name to clearly indicate that
+  /// the user represented by `followerId` is a follower of another user.
+  /// `onDelete: Cascade` ensures that if a follower is deleted, their
+  /// follow records are also removed.
+
+  /// The @relation attribute:
+  /// 
+  /// 1.	Names the relation: Useful when you have multiple relations between the same two models, or in self-referencing cases (like with Follow).
+  /// 2.	Specifies fields and references: These indicate the foreign key field (in the current model) and the primary key it references in the related model.
+  /// 3.	Handles cascading behavior: With options like onDelete: Cascade, you can define how related records are handled when one side of the relationship is deleted.
+  follower User @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+
+  /// `followingId` represents the ID of the user who is being followed.
+  /// It serves as a foreign key linking this record to a specific `User`.
+  followingId String
+
+  /// The `following` field establishes a relation to the `User` model
+  /// representing the user who is being followed.
+  /// This uses the "Following" relation name to indicate that
+  /// the user represented by `followingId` is being followed.
+  /// `onDelete: Cascade` ensures that if a user who is being followed is deleted,
+  /// their follow records are also removed.
+  following User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  /// The `@@unique([followerId, followingId])` constraint enforces that a follower
+  /// can only follow a specific user once, preventing duplicate follow records.
+  /// Also ensures that we have the same combination of followerId and followingId.
+  @@unique([followerId, followingId])
+  
+  /// `@@map("follows")` renames the underlying table in the database to "follows".
+  /// This makes it clearer in the database that this table stores follow relationships.
+  @@map("follows")
 }
 
 model Post {
