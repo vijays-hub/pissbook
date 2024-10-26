@@ -9,7 +9,6 @@
 
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { userDataSelect } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -17,6 +16,8 @@ import UserAvatar from "./UserAvatar";
 import { Button } from "./ui/button";
 import { formatNumber, getSanitizedDisplayName } from "@/lib/utils";
 import { unstable_cache } from "next/cache";
+import FollowButton from "./FollowButton";
+import { getUserDataSelect } from "@/lib/types";
 
 export default async function TrendingTopics() {
   return (
@@ -52,11 +53,23 @@ async function FollowSuggestions() {
   //   TODO: Move this to a separate function.
   const usersToFollow = await prisma.user.findMany({
     where: {
+      //  ensures that the current user doesn’t see themselves in the list of follow suggestions.
       NOT: {
         id: user.id,
       },
+      /**
+       * This condition filters out users who the current user is already following.
+       * The condition checks that there should be no entry in the followers relation
+       * where followerId matches the user.id. Essentially, this ensures that the users
+       * in the result have not been followed by the current user.
+       */
+      followers: {
+        none: {
+          followerId: user.id,
+        },
+      },
     },
-    select: userDataSelect,
+    select: getUserDataSelect(user.id),
     take: 5,
   });
 
@@ -85,7 +98,15 @@ async function FollowSuggestions() {
             </div>
           </Link>
 
-          <Button>Follow</Button>
+          <FollowButton
+            userId={user.id}
+            initialState={{
+              followers: user._count.followers,
+              isFollowedByUser: user.followers.some(
+                ({ followerId }) => followerId === user.id
+              ),
+            }}
+          />
         </div>
       ))}
     </div>
