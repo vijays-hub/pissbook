@@ -75,7 +75,7 @@ export default function PostEditor() {
           disabled={!content}
           className="min-w-20"
         >
-          Post
+          Piss around
         </LoadingButton>
       </div>
     </div>
