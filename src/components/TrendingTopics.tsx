@@ -11,7 +11,7 @@ import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 import UserAvatar from "./UserAvatar";
 import { Button } from "./ui/button";
 import { formatNumber, getSanitizedDisplayName } from "@/lib/utils";
@@ -72,6 +72,8 @@ async function FollowSuggestions() {
     select: getUserDataSelect(user.id),
     take: 5,
   });
+
+  if (usersToFollow.length === 0) return null;
 
   return (
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
