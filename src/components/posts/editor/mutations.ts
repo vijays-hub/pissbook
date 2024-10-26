@@ -14,6 +14,7 @@
 import { toast } from "@/hooks/use-toast";
 import {
   InfiniteData,
+  QueryFilters,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -66,7 +67,7 @@ export function usePostSubmitMutation() {
        *
        *  */
 
-      const queryFilter = { queryKey: POST_FEED_CACHE_KEY };
+      const queryFilter: QueryFilters = { queryKey: POST_FEED_CACHE_KEY };
 
       queryClient.cancelQueries(queryFilter);
 
