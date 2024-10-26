@@ -28,18 +28,13 @@ export default function FollowButton({
    */
   const { mutate } = useMutation({
     mutationFn: () =>
-      data.isFollowedByUser ? unfollowUser(userId) : followUser(userId),
+      data.isFollowedByUser
+        ? kyInstance.delete(`/api/users/${userId}/followers`)
+        : kyInstance.post(`/api/users/${userId}/followers`),
   });
   // Component Utils ---> END
 
   //   Misc Helpers ---> START
-  const unfollowUser = async (userId: string) => {
-    kyInstance.delete(`/api/users/${userId}/followers`);
-  };
-
-  const followUser = async (userId: string) => {
-    kyInstance.post(`/api/users/${userId}/followers`);
-  };
   // Misc Helpers ---> END
 
   return (
