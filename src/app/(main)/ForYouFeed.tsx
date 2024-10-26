@@ -8,6 +8,8 @@ import { PostsPage } from "@/lib/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 
+export const POST_FEED_CACHE_KEY = ["post-feed", "for-you"];
+
 export default function ForYouFeed() {
   // This is a callback function that will be called by useInfiniteQuery to fetch the posts.
   const fetchPosts = async ({ pageParam }: { pageParam: string | null }) =>
@@ -31,7 +33,7 @@ export default function ForYouFeed() {
     status,
   } = useInfiniteQuery({
     // Adding a generic "post-feed" key to the queryKey. We'll use this for all our post feed queries.
-    queryKey: ["post-feed", "for-you"],
+    queryKey: POST_FEED_CACHE_KEY,
     // No need to handle any error states. kyInstance will throw an error if the request fails.
     queryFn: fetchPosts,
     /**
@@ -44,8 +46,8 @@ export default function ForYouFeed() {
   });
 
   /**
-   * 'data' object looks like this:
-   * { pages: [{ posts: PostData[], nextCursor: string | null }], pageParams: string[] }
+   * 'data' object looks like this: (Initially only one object will be present, but as we scroll, more objects will be added to the pages array)
+   * { pages: [{ posts: PostData[], nextCursor: string | null }, ...], pageParams: string[] }
    *
    * So we need to flatten the 'pages' array to get all the posts.
    *

@@ -4,14 +4,15 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import { createPost } from "./actions";
 import { useSession } from "@/app/(main)/SessionProvider";
 import UserAvatar from "@/components/UserAvatar";
-import { Button } from "@/components/ui/button";
 import "./styles.css";
+import { usePostSubmitMutation } from "./mutations";
+import LoadingButton from "@/components/LoadingButton";
 
 // Read the docs from the link mentioned above to understand the code below...
 export default function PostEditor() {
+  // Component Utils ---> START
   const { user } = useSession();
 
   const editor = useEditor({
@@ -33,13 +34,28 @@ export default function PostEditor() {
       blockSeparator: "\n",
     }) || "";
 
-  async function onSubmit() {
-    // Call the server action to create a post
-    await createPost({ content });
+  const createPostMutation = usePostSubmitMutation();
+  // Component Utils ---> END
 
-    // Clear the editor content after submitting the post
-    editor?.commands.clearContent();
+  // Misc Helpers ---> START
+  function onSubmit() {
+    createPostMutation.mutate(
+      { content },
+      {
+        /*
+         * This is different from the `onSuccess` in the mutation hook. This is a callback
+         * that is called after the mutation is successful. We would often need to do something
+         * at the component level after the mutation is successful. This is where this callback
+         * comes in. This is an extra callback react-query provides.
+         */
+        onSuccess: () => {
+          // Clear the editor content after submitting the post
+          editor?.commands.clearContent();
+        },
+      }
+    );
   }
+  // Misc Helpers ---> END
 
   return (
     <div className="flex flex-col gap-5 rounded-xl bg-card p-5 shadow-sm">
@@ -53,9 +69,14 @@ export default function PostEditor() {
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={onSubmit} disabled={!content} className="min-w-20">
-          Post
-        </Button>
+        <LoadingButton
+          loading={createPostMutation.isPending}
+          onClick={onSubmit}
+          disabled={!content}
+          className="min-w-20"
+        >
+          Piss around
+        </LoadingButton>
       </div>
     </div>
   );
