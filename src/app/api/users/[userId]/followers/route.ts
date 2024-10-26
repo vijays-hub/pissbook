@@ -113,3 +113,45 @@ export async function POST(
     return new Response("Internal server error", { status: 500 });
   }
 }
+
+/**
+ * We could have simply sent a boolean value in the POST endpoint to follow or un-follow a user.
+ * But it's more RESTful to use the DELETE method to un-follow a user. So, this endpoint is used
+ * to un-follow a user. The currently logged in user would un-follow the user whose id is
+ * passed in the URL.
+ */
+export async function DELETE(
+  req: Request,
+  { params: { userId } }: { params: { userId: string } }
+) {
+  try {
+    const { user: loggedInUser } = await validateRequest();
+
+    if (!loggedInUser) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    /**
+     * We are using deleteMany method instead of delete just like upsert method in the POST endpoint.
+     * This is because, if the user is not following the user, then we don't want to do anything.
+     * It doesn't make sense to throw an error if the user is not following the user. So, we just
+     * ignore the delete operation if the user is not following the user.
+     *
+     * This also comes in handy when there is a race condition of deleting (un following) the same
+     * user multiple times. If we use delete method, then it would throw an error if the user is not
+     * following the user. But, if we use deleteMany method, then it would just ignore the delete
+     * operation if the user is not following the user.
+     */
+    await prisma.follow.deleteMany({
+      where: {
+        followerId: loggedInUser.id,
+        followingId: userId,
+      },
+    });
+
+    return new Response("Success", { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response("Internal server error", { status: 500 });
+  }
+}
