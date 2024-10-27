@@ -34,6 +34,7 @@ import { formatRelativeDate, getSanitizedDisplayName } from "@/lib/utils";
 import { useSession } from "@/app/(main)/SessionProvider";
 import PostActionsMenu from "./PostActionsMenu";
 import Linkify from "../Linkify";
+import UserTooltip from "../UserTooltip";
 
 interface PostConfig {
   post: PostData;
@@ -60,17 +61,21 @@ export default function Post({ post }: PostConfig) {
     <article className="group/post space-y-3 bg-card rounded-2xl p-5 shadow-sm">
       <div className="flex justify-between gap-3">
         <div className="flex flex-wrap gap-3">
-          <Link href={`/users/${post.user.username}`}>
-            <UserAvatar avatarUrl={post.user.avatarUrl} />
-          </Link>
+          <UserTooltip user={post.user}>
+            <Link href={`/users/${post.user.username}`}>
+              <UserAvatar avatarUrl={post.user.avatarUrl} />
+            </Link>
+          </UserTooltip>
 
           <div>
-            <Link
-              href={`/users/${post.user.username}`}
-              className="block font-medium hover:underline capitalize"
-            >
-              {getSanitizedDisplayName(post.user.displayName)}
-            </Link>
+            <UserTooltip user={post.user}>
+              <Link
+                href={`/users/${post.user.username}`}
+                className="block font-medium hover:underline capitalize"
+              >
+                {getSanitizedDisplayName(post.user.displayName)}
+              </Link>
+            </UserTooltip>
             <Link
               href={`/posts/${post.id}`}
               className="block text-sm text-muted-foreground hover:underline"
