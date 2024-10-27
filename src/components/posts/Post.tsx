@@ -33,6 +33,7 @@ import UserAvatar from "../UserAvatar";
 import { formatRelativeDate, getSanitizedDisplayName } from "@/lib/utils";
 import { useSession } from "@/app/(main)/SessionProvider";
 import PostActionsMenu from "./PostActionsMenu";
+import Linkify from "../Linkify";
 
 interface PostConfig {
   post: PostData;
@@ -95,7 +96,9 @@ export default function Post({ post }: PostConfig) {
         )}
       </div>
 
-      <div className="whitespace-pre-line break-words">{post.content}</div>
+      <Linkify>
+        <div className="whitespace-pre-line break-words">{post.content}</div>
+      </Linkify>
     </article>
   );
 }
