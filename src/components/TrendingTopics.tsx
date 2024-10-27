@@ -18,6 +18,7 @@ import { formatNumber, getSanitizedDisplayName } from "@/lib/utils";
 import { unstable_cache } from "next/cache";
 import FollowButton from "./FollowButton";
 import { getUserDataSelect } from "@/lib/types";
+import UserTooltip from "./UserTooltip";
 
 export default async function TrendingTopics() {
   return (
@@ -80,25 +81,27 @@ async function FollowSuggestions() {
       <div className="text-xl font-bold">You may know:</div>
       {usersToFollow.map((user) => (
         <div key={user.id} className="flex items-center justify-center gap-6">
-          <Link
-            href={`/user/${user.username}`}
-            className="flex items-center gap-3"
-          >
-            <UserAvatar
-              avatarUrl={user.avatarUrl}
-              size={40}
-              className="flex-none"
-            />
+          <UserTooltip user={user}>
+            <Link
+              href={`/user/${user.username}`}
+              className="flex items-center gap-3"
+            >
+              <UserAvatar
+                avatarUrl={user.avatarUrl}
+                size={40}
+                className="flex-none"
+              />
 
-            <div>
-              <p className="line-clamp-1 break-all font-semibold hover:underline text-sm capitalize">
-                {getSanitizedDisplayName(user.displayName)}
-              </p>
-              <p className="line-clamp-1 break-all text-muted-foreground text-xs">
-                @{user.username}
-              </p>
-            </div>
-          </Link>
+              <div>
+                <p className="line-clamp-1 break-all font-semibold hover:underline text-sm capitalize">
+                  {getSanitizedDisplayName(user.displayName)}
+                </p>
+                <p className="line-clamp-1 break-all text-muted-foreground text-xs">
+                  @{user.username}
+                </p>
+              </div>
+            </Link>
+          </UserTooltip>
 
           <FollowButton
             userId={user.id}
