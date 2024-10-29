@@ -24,3 +24,12 @@ export const createPostSchema = z.object({
   content: requiredString,
 });
 // Posts ---> END
+
+// Uploadthing ---> START
+export const updateUserProfileSchema = z.object({
+  displayName: requiredString,
+  bio: z.string().max(1000, "Bio must be less than 1000 characters"),
+});
+
+export type UpdateUserProfileConfig = z.infer<typeof updateUserProfileSchema>;
+// Uploadthing ---> END
