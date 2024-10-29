@@ -70,7 +70,7 @@ function LinkifyUsername({ children }: LinkifyConfig) {
 function LinkifyHashtag({ children }: LinkifyConfig) {
   return (
     <LinkIt
-      regex={/(#[a-zA-Z0-9]+)/}
+      regex={/(#[a-zA-Z0-9_-]+)/}
       component={(match, key) => {
         const hashtag = match.slice(1); // remove the # from the hashtag
 
