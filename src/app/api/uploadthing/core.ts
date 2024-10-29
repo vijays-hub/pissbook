@@ -9,7 +9,14 @@ import prisma from "@/lib/prisma";
 import { createUploadthing, FileRouter } from "uploadthing/next";
 import { UploadThingError, UTApi } from "uploadthing/server";
 
-const uploadInstance = createUploadthing();
+const uploadInstance = createUploadthing({
+  errorFormatter: (error) => {
+    console.log({ error });
+    return {
+      message: error.message,
+    };
+  },
+});
 
 export const fileRouter = {
   avatarUploader: uploadInstance({
