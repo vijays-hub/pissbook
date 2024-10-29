@@ -13,6 +13,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import UserPosts from "./UserPosts";
 import Linkify from "@/components/Linkify";
+import EditProfileButton from "./EditProfileTrigger";
 
 interface ProfilePageConfig {
   params: { username: string };
@@ -126,7 +127,7 @@ async function UserProfile({
         </div>
 
         {user.id === loggedInUserId ? (
-          <Button>Edit Profile</Button>
+          <EditProfileButton user={user} />
         ) : (
           // Checkout the followers count when the user clicks on the follow/unfollow button
           <FollowButton userId={user.id} initialState={followerInfo} />

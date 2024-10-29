@@ -28,6 +28,17 @@ const nextConfig = {
    * ? More: https://www.npmjs.com/package/@node-rs/argon2
    */
   serverExternalPackages: ["@node-rs/argon2"],
+  // Whitelist image domains
+  images: {
+    remotePatterns: [
+      // Custom uploadthing domain -> src/app/api/uploadthing/core.ts
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+        pathname: `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/*`,
+      },
+    ],
+  },
 };
 
 export default nextConfig;

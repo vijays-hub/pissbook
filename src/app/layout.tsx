@@ -4,6 +4,9 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import ReactQueryClientProvider from "./ReactQueryClientProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { fileRouter } from "./api/uploadthing/core";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,6 +34,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.className} ${geistMono.className}`}>
+
+        {/* ! READ - https://docs.uploadthing.com/getting-started/appdir#improving-ssr */}
+        <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
+
         <ReactQueryClientProvider>
           {/* 
         
