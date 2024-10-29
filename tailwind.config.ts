@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { withUt } from 'uploadthing/tw'
 
 const config: Config = {
     darkMode: ["class"],
@@ -64,4 +65,12 @@ const config: Config = {
   },
   plugins: [require("tailwindcss-animate")],
 };
-export default config;
+
+/**
+ * Wrapping the tailwind config with the uploadthing utility function.
+ * This is to support the tailwind styles for the components like Upload Button,
+ * Dropzone etc of uploadthing.
+ * 
+ * ! READ: https://docs.uploadthing.com/concepts/theming#theming-with-tailwind-css
+ */
+export default withUt(config);
