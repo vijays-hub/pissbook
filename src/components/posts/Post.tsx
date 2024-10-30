@@ -30,11 +30,14 @@
 import { PostData } from "@/lib/types";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
-import { formatRelativeDate, getSanitizedDisplayName } from "@/lib/utils";
+import { cn, formatRelativeDate, getSanitizedDisplayName } from "@/lib/utils";
 import { useSession } from "@/app/(main)/SessionProvider";
 import PostActionsMenu from "./PostActionsMenu";
 import Linkify from "../Linkify";
 import UserTooltip from "../UserTooltip";
+import { Attachment } from "@prisma/client";
+import Image from "next/image";
+import React from "react";
 
 interface PostConfig {
   post: PostData;
@@ -104,6 +107,56 @@ export default function Post({ post }: PostConfig) {
       <Linkify>
         <div className="whitespace-pre-line break-words">{post.content}</div>
       </Linkify>
+
+      {!!post.attachments.length && (
+        <MediaPreview attachments={post.attachments} />
+      )}
     </article>
+  );
+}
+
+interface MediaPreviewConfig {
+  // prisma schema type for Attachment
+  attachments: Attachment[];
+}
+
+function MediaPreview({ attachments }: MediaPreviewConfig) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col gap-3",
+        attachments.length > 1 && "sm:grid sm:grid-cols-2"
+      )}
+    >
+      {React.Children.toArray(
+        attachments.map((attachment) => {
+          if (attachment.type === "IMAGE") {
+            return (
+              <Image
+                src={attachment.url}
+                alt="Attachment"
+                width={500}
+                height={500}
+                className="mx-auto size-fit max-h-[30rem] rounded-2xl"
+              />
+            );
+          }
+
+          if (attachment.type === "VIDEO") {
+            return (
+              <div>
+                <video
+                  src={attachment.url}
+                  controls
+                  className="mx-auto size-fit max-h-[30rem] rounded-2xl"
+                />
+              </div>
+            );
+          }
+
+          return <p className="text-destructive">Unsupported media type</p>;
+        })
+      )}
+    </div>
   );
 }
