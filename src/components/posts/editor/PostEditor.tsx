@@ -9,6 +9,10 @@ import UserAvatar from "@/components/UserAvatar";
 import "./styles.css";
 import { usePostSubmitMutation } from "./mutations";
 import LoadingButton from "@/components/LoadingButton";
+import useMediaUploads from "./useMediaUploads";
+import AttachmentHandler from "./Attachments/Handler";
+import AttachmentPreview from "./Attachments/Previews";
+import { Loader2 } from "lucide-react";
 
 // Read the docs from the link mentioned above to understand the code below...
 export default function PostEditor() {
@@ -35,12 +39,26 @@ export default function PostEditor() {
     }) || "";
 
   const createPostMutation = usePostSubmitMutation();
+
+  const {
+    startUpload,
+    attachments,
+    isUploading,
+    uploadProgress,
+    removeAttachment,
+    reset: resetMediaUploads,
+  } = useMediaUploads();
   // Component Utils ---> END
 
   // Misc Helpers ---> START
   function onSubmit() {
     createPostMutation.mutate(
-      { content },
+      {
+        content,
+        mediaIds: attachments
+          .filter(Boolean)
+          .map((attachment) => attachment.mediaId) as string[],
+      },
       {
         /*
          * This is different from the `onSuccess` in the mutation hook. This is a callback
@@ -51,6 +69,9 @@ export default function PostEditor() {
         onSuccess: () => {
           // Clear the editor content after submitting the post
           editor?.commands.clearContent();
+
+          // Clear the attachments state after submitting the post
+          resetMediaUploads();
         },
       }
     );
@@ -68,11 +89,30 @@ export default function PostEditor() {
         />
       </div>
 
+      {/* Preview of Attachments --> START */}
+      {!!attachments.length && (
+        <AttachmentPreview
+          attachments={attachments}
+          removeAttachment={removeAttachment}
+        />
+      )}
+      {/* Preview of Attachments --> END */}
+
       <div className="flex justify-end">
+        {isUploading && (
+          <>
+            <span className="text-sm">{uploadProgress ?? 0}%</span>
+            <Loader2 className="size-5 animate-spin text-primary" />
+          </>
+        )}
+        <AttachmentHandler
+          onFilesSelected={startUpload}
+          disabled={isUploading || attachments.length >= 5}
+        />
         <LoadingButton
           loading={createPostMutation.isPending}
           onClick={onSubmit}
-          disabled={!content}
+          disabled={!content || isUploading}
           className="min-w-20"
         >
           Piss around
