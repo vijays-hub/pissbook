@@ -37,6 +37,12 @@ const nextConfig = {
         hostname: "utfs.io",
         pathname: `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/*`,
       },
+      // Post attachments of uploadthing domain -> src/app/api/uploadthing/core.ts
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+        pathname: `/f/*`,
+      },
     ],
   },
 };
