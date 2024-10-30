@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Attachment } from "../useMediaUploads";
 import Image from "next/image";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, X } from "lucide-react";
 
 interface AttachmentPreviewConfig {
   attachments: Attachment[];
@@ -59,7 +59,7 @@ function Preview({
           className="absolute top-3 right-3 rounded-full bg-foreground p-1.5 text-background transition-colors hover:bg-foreground/60"
           onClick={onRemove}
         >
-          <ImageIcon size={20} />
+          <X size={20} />
         </button>
       )}
     </div>
