@@ -1,4 +1,4 @@
-## MUST READ
+## Things to know
 
 - This project was built on the RC version of NextJs 15 and React 19.. So make sure you use "npm i <package> --legacy-peer-deps" for every package you install. Get to know about
 legacy peer deps -> https://medium.com/@neelendra1destiny/what-is-the-difference-between-legacy-peer-deps-vs-force-898cdf8f1c55
