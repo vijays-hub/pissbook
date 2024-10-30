@@ -25,7 +25,7 @@ model User {
   avatarUrl    String?
   bio          String?
   sessions     Session[]
-  posts         Post[]
+  posts        Post[]
 
   /// `following` represents the list of users this user is following.
   /// Using `@relation("Followers")` indicates that this user is the follower
@@ -87,18 +87,52 @@ model Follow {
   /// can only follow a specific user once, preventing duplicate follow records.
   /// Also ensures that we have the same combination of followerId and followingId.
   @@unique([followerId, followingId])
-  
   /// `@@map("follows")` renames the underlying table in the database to "follows".
   /// This makes it clearer in the database that this table stores follow relationships.
   @@map("follows")
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  content   String
-  userId    String
-  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
-  createdAt DateTime @default(now())
+  id          String       @id @default(cuid())
+  content     String
+  userId      String
+  user        User         @relation(references: [id], fields: [userId], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  attachments Attachment[]
 
   @@map("posts")
+}
+
+// A single post can have multiple attachments, hence bloating our Post model is not a good idea.
+// Instead, we create a separate model for attachments and establish a one-to-many relation between Post and Attachment.
+model Attachment {
+  id String @id @default(cuid())
+
+  // Since the media can be very large (especially videos), it might take a while for the upload to finish.
+  // So, we would need to upload them immediately before the user submits the post (by clicking the "Post" button).
+  // Because, when we upload after clicking the "Post" button, the user would have to wait for the 
+  // upload to finish which would take a while. 
+  //
+  // But here's the catch: If the user decides to cancel the post, we would have already uploaded the media.
+  // In such cases, we won't have a post to associate the media with. For this reason, the postId is optional.
+  // And if the user decides to post the media, we would associate the media with the post.
+  // 
+  // Don't worry about the uploaded media being orphaned. We can run a cron job to delete media that 
+  // are not associated with any post later. This way we are not bloating our database with orphaned media.
+  postId String?
+
+  // On delete of an attachment, we don't want to delete the post. So, we set the onDelete to SetNull, so that the
+  // postId of the attachment is set to null when the post is deleted.
+  post Post? @relation(fields: [postId], references: [id], onDelete: SetNull)
+
+  type      MediaType
+  url       String
+  createdAt DateTime  @default(now())
+
+  @@map("post_attachments")
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
 }
