@@ -108,6 +108,7 @@ export default function Post({ post }: PostConfig) {
         <div className="whitespace-pre-line break-words">{post.content}</div>
       </Linkify>
 
+      {/* TODO: Convert this to a carousel */}
       {!!post.attachments.length && (
         <MediaPreview attachments={post.attachments} />
       )}
