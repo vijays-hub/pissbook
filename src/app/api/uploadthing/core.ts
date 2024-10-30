@@ -78,7 +78,29 @@ export const fileRouter = {
       });
 
       return { avatarUrl: newAvatarUrl };
+    }),
+  postAttachmentUploader: uploadInstance({
+    image: { maxFileSize: "4MB", maxFileCount: 5 },
+    video: { maxFileSize: "64MB", maxFileCount: 5 },
+  })
+    .middleware(async () => {
+      const { user } = await validateRequest();
+
+      if (!user) throw new UploadThingError("Unauthorized");
+
+      return { userId: user.id };
     })
+    .onUploadComplete(async ({ file }) => {
+      const media = await prisma.attachment.create({
+        data: {
+          url: generateSecureUrl(file.url),
+          type: file.type.startsWith("image") ? "IMAGE" : "VIDEO",
+        },
+      });
+
+      // Essential to return the mediaId so that the client can associate the media with the post.
+      return { mediaId: media.id };
+    }),
 } satisfies FileRouter;
 
 export type AppFileRouter = typeof fileRouter;
