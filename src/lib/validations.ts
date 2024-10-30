@@ -22,6 +22,9 @@ export type LoginConfig = z.infer<typeof loginSchema>;
 // Posts ---> START
 export const createPostSchema = z.object({
   content: requiredString,
+  mediaIds: z
+    .array(z.string())
+    .max(5, "You can upload at most 5 pissing files"),
 });
 // Posts ---> END
 
