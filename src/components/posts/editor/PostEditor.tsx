@@ -13,6 +13,8 @@ import useMediaUploads from "./useMediaUploads";
 import AttachmentHandler from "./Attachments/Handler";
 import AttachmentPreview from "./Attachments/Previews";
 import { Loader2 } from "lucide-react";
+import { useDropzone } from "@uploadthing/react";
+import { cn } from "@/lib/utils";
 
 // Read the docs from the link mentioned above to understand the code below...
 export default function PostEditor() {
@@ -48,6 +50,17 @@ export default function PostEditor() {
     removeAttachment,
     reset: resetMediaUploads,
   } = useMediaUploads();
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: startUpload,
+  });
+
+  /**
+   * The omClick helps us to handle the click event on the Editor.
+   * Ideally we don't want to trigger file upload when the user clicks
+   * on the editor.
+   */
+  const { onClick, ...rootProps } = getRootProps();
   // Component Utils ---> END
 
   // Misc Helpers ---> START
@@ -76,6 +89,20 @@ export default function PostEditor() {
       }
     );
   }
+
+  /**
+   * The following function allows user to copy some images and paste them directly
+   * on the editor. This would be a cherry on top for the drag and drop feature.
+   */
+  function handlePaste(event: React.ClipboardEvent<HTMLInputElement>) {
+    const files = Array.from(event.clipboardData?.items || [])
+      .slice(0, 5) // Since we only allow 5 attachments
+      .filter((item) => item.kind === "file") // We only care about files
+      .map((item) => item.getAsFile()) as File[];
+
+    startUpload(files);
+  }
+
   // Misc Helpers ---> END
 
   return (
@@ -83,10 +110,22 @@ export default function PostEditor() {
       <div className="flex gap-5">
         <UserAvatar avatarUrl={user.avatarUrl} className="hidden sm:inline" />
 
-        <EditorContent
-          editor={editor}
-          className="w-full max-h-[20rem] overflow-y-auto bg-background rounded-2xl px-5 py-3"
-        />
+        <div {...rootProps} className="w-full">
+          <EditorContent
+            editor={editor}
+            /**
+             * cn is also extremely helpful if you want to style a component based on some conditions.
+             */
+            className={cn(
+              "w-full max-h-[20rem] overflow-y-auto bg-background rounded-2xl px-5 py-3",
+              isDragActive && "outline-dashed text-primary"
+            )}
+            onPaste={handlePaste}
+          />
+
+          {/* No need to add any extra config, because the getInputProps() from uploadthing has it all to support drag and drop */}
+          <input {...getInputProps()} />
+        </div>
       </div>
 
       {/* Preview of Attachments --> START */}
@@ -98,7 +137,7 @@ export default function PostEditor() {
       )}
       {/* Preview of Attachments --> END */}
 
-      <div className="flex justify-end">
+      <div className="flex justify-end items-center gap-3">
         {isUploading && (
           <>
             <span className="text-sm">{uploadProgress ?? 0}%</span>
