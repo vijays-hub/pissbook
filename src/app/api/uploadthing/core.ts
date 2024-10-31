@@ -34,8 +34,9 @@ const uploadInstance = createUploadthing({
  *
  * Learn more: Learn more on working with files -> https://docs.uploadthing.com/working-with-files
  */
+export const SECURE_FILE_PATH = `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`;
 const generateSecureUrl = (url: string) => {
-  url.replace("/f/", `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`);
+  url.replace("/f/", SECURE_FILE_PATH);
   return url;
 };
 
