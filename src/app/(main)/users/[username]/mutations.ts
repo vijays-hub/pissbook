@@ -44,8 +44,6 @@ export function useUserUpdateMutation() {
 
       queryClient.setQueriesData<InfiniteData<PostsPage, string | null>>(
         queryFilter,
-        // TODO: Fix the type error here
-        // @ts-ignore
         (oldData) => {
           if (!oldData) return;
 
