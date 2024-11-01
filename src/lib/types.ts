@@ -52,3 +52,8 @@ export interface FollowerInfo {
   followers: number;
   isFollowedByUser: boolean;
 }
+
+export interface PostLikeData {
+  likes: number;
+  isLikedByUser: boolean;
+}
