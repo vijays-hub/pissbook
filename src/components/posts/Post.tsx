@@ -82,6 +82,33 @@ export default function Post({ post }: PostConfig) {
             <Link
               href={`/posts/${post.id}`}
               className="block text-sm text-muted-foreground hover:underline"
+              /**
+               * TEMP: Remove this when we have a fix for the hydration warning!
+               * 
+               * This is a special case where user created a post and he clicks on the
+               * post to view it. So in such cases, we can suppress the hydration warning.
+               * 
+               * ! HERE IS THE ERROR:
+               * 
+               * Hydration failed because the server rendered HTML didn't match the client. 
+               * As a result this tree will be regenerated on the client. This can happen if a 
+               * SSR-ed Client Component used
+                  See more info here: https://nextjs.org/docs/messages/react-hydration-error
+
+                  - A server/client branch `if (typeof window !== 'undefined')`.
+                  - Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+                  - Date formatting in a user's locale which doesn't match the server.
+                  - External changing data without sending a snapshot of it along with the HTML.
+                  - Invalid HTML tag nesting.
+
+                  It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+
+                  ...
+                  +  14 seconds ago
+                  -  13 seconds ago
+               */
+              suppressHydrationWarning 
             >
               {/* TEMP: Commenting this out for time being. When we return the posts data from the 
                       endpoint we made today (posts/for-you), we will have the createdAt field 
