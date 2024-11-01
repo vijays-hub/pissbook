@@ -87,7 +87,7 @@ export default function Post({ post }: PostConfig) {
             </UserTooltip>
             <Link
               href={`/posts/${post.id}`}
-              className="block text-sm text-muted-foreground hover:underline"
+              className="block text-sm text-muted-foreground hover:underline italic"
               /**
                * TEMP: Remove this when we have a fix for the hydration warning!
                * 
