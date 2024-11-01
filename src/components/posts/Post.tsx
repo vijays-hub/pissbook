@@ -27,7 +27,7 @@
  */
 "use client";
 
-import { PostData } from "@/lib/types";
+import { PostData, PostLikeData } from "@/lib/types";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
 import { cn, formatRelativeDate, getSanitizedDisplayName } from "@/lib/utils";
@@ -38,6 +38,7 @@ import UserTooltip from "../UserTooltip";
 import { Attachment } from "@prisma/client";
 import Image from "next/image";
 import React from "react";
+import PostLikeButton from "./PostLikeButton";
 
 interface PostConfig {
   post: PostData;
@@ -45,6 +46,11 @@ interface PostConfig {
 
 export default function Post({ post }: PostConfig) {
   const { user } = useSession();
+
+  const likesData: PostLikeData = {
+    likes: post._count.likes,
+    isLikedByUser: post.likes.length > 0,
+  };
 
   return (
     /**
@@ -108,7 +114,7 @@ export default function Post({ post }: PostConfig) {
                   +  14 seconds ago
                   -  13 seconds ago
                */
-              suppressHydrationWarning 
+              suppressHydrationWarning
             >
               {/* TEMP: Commenting this out for time being. When we return the posts data from the 
                       endpoint we made today (posts/for-you), we will have the createdAt field 
@@ -139,6 +145,9 @@ export default function Post({ post }: PostConfig) {
       {!!post.attachments.length && (
         <MediaPreview attachments={post.attachments} />
       )}
+
+      <hr className="text-muted-foreground" />
+      <PostLikeButton postId={post.id} initialState={likesData} />
     </article>
   );
 }
