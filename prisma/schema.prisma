@@ -37,6 +37,7 @@ model User {
   followers Follow[] @relation("Following")
 
   createdAt DateTime @default(now())
+  likes     Like[]
 
   @@map("users") // we don't want the table to be called "User" in the database, instead we want it to be called "users"
 }
@@ -99,6 +100,7 @@ model Post {
   user        User         @relation(references: [id], fields: [userId], onDelete: Cascade)
   createdAt   DateTime     @default(now())
   attachments Attachment[]
+  likes       Like[]
 
   @@map("posts")
 }
@@ -135,4 +137,16 @@ model Attachment {
 enum MediaType {
   IMAGE
   VIDEO
+}
+
+model Like {
+  userId String
+  // On deleting a user, delete all their likes.
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String
+  // On deleting a post, delete all the likes on that post.
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("likes")
 }
