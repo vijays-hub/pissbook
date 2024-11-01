@@ -30,16 +30,15 @@
 import { PostData, PostLikeData } from "@/lib/types";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
-import { cn, formatRelativeDate, getSanitizedDisplayName } from "@/lib/utils";
+import { formatRelativeDate, getSanitizedDisplayName } from "@/lib/utils";
 import { useSession } from "@/app/(main)/SessionProvider";
 import PostActionsMenu from "./PostActionsMenu";
 import Linkify from "../Linkify";
 import UserTooltip from "../UserTooltip";
-import { Attachment } from "@prisma/client";
-import Image from "next/image";
 import React from "react";
 import PostLikeButton from "./PostLikeButton";
 import BookmarkButton from "./BookmarkButton";
+import MediaCarousel from "../MediaCarousel";
 
 interface PostConfig {
   post: PostData;
@@ -144,7 +143,13 @@ export default function Post({ post }: PostConfig) {
 
       {/* TODO: Convert this to a carousel */}
       {!!post.attachments.length && (
-        <MediaPreview attachments={post.attachments} />
+        <MediaCarousel
+          attachments={[
+            ...post.attachments,
+            ...post.attachments,
+            ...post.attachments,
+          ]}
+        />
       )}
 
       <hr className="text-muted-foreground" />
@@ -160,51 +165,5 @@ export default function Post({ post }: PostConfig) {
         />
       </div>
     </article>
-  );
-}
-
-interface MediaPreviewConfig {
-  // prisma schema type for Attachment
-  attachments: Attachment[];
-}
-
-function MediaPreview({ attachments }: MediaPreviewConfig) {
-  return (
-    <div
-      className={cn(
-        "flex flex-col gap-3",
-        attachments.length > 1 && "sm:grid sm:grid-cols-2"
-      )}
-    >
-      {React.Children.toArray(
-        attachments.map((attachment) => {
-          if (attachment.type === "IMAGE") {
-            return (
-              <Image
-                src={attachment.url}
-                alt="Attachment"
-                width={500}
-                height={500}
-                className="mx-auto size-fit max-h-[30rem] rounded-2xl"
-              />
-            );
-          }
-
-          if (attachment.type === "VIDEO") {
-            return (
-              <div>
-                <video
-                  src={attachment.url}
-                  controls
-                  className="mx-auto size-fit max-h-[30rem] rounded-2xl"
-                />
-              </div>
-            );
-          }
-
-          return <p className="text-destructive">Unsupported media type</p>;
-        })
-      )}
-    </div>
   );
 }
