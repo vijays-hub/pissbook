@@ -53,7 +53,7 @@ const config: Config = {
   			}
   		},
   		fontFamily: {
-  			sans: ["var(--font-geist-sans)"],
+  			sans: ["var(--font-alegreya-italic)", "var(--font-alegreya)"],
   			mono: ["var(--font-geist-mono)"]
   		},
   		borderRadius: {

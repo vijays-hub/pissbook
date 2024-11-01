@@ -8,13 +8,13 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { fileRouter } from "./api/uploadthing/core";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
+const alegreyaItalic = localFont({
+  src: "./fonts/Alegreya-Italic-VariableFont_wght.ttf",
+  variable: "--font-alegreya-italic",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+const alegreya = localFont({
+  src: "./fonts/Alegreya-VariableFont_wght.ttf",
+  variable: "--font-alegreya",
 });
 
 export const metadata: Metadata = {
@@ -33,8 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.className} ${geistMono.className}`}>
-
+      <body className={`${alegreyaItalic.className} ${alegreya.className}`}>
         {/* ! READ - https://docs.uploadthing.com/getting-started/appdir#improving-ssr */}
         <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
 
