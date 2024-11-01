@@ -39,6 +39,7 @@ import { Attachment } from "@prisma/client";
 import Image from "next/image";
 import React from "react";
 import PostLikeButton from "./PostLikeButton";
+import BookmarkButton from "./BookmarkButton";
 
 interface PostConfig {
   post: PostData;
@@ -147,7 +148,17 @@ export default function Post({ post }: PostConfig) {
       )}
 
       <hr className="text-muted-foreground" />
-      <PostLikeButton postId={post.id} initialState={likesData} />
+      <div className="flex justify-between gap-5">
+        <PostLikeButton postId={post.id} initialState={likesData} />
+        <BookmarkButton
+          postId={post.id}
+          initialState={{
+            isBookmarkedByUser: post.bookmarks.some(
+              (bookmark) => bookmark.userId === user?.id
+            ),
+          }}
+        />
+      </div>
     </article>
   );
 }
