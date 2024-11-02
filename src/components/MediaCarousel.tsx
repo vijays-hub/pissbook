@@ -15,7 +15,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { Attachment } from "@prisma/client";
 import Image from "next/image";
 import React from "react";
-import { SquareArrowLeft, SquareArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export const getAttachmentToRender = (attachment: Attachment) => {
   if (attachment.type === "IMAGE") {
@@ -68,7 +68,7 @@ export default function MediaCarousel({
         className="cursor-pointer absolute top-1/2 left-0 p-2 bg-primary rounded-full z-10 hover:opacity-80"
         onClick={() => sliderRef?.current?.slickPrev()}
       >
-        <SquareArrowLeft className="text-white size-4" />
+        <ArrowLeft className="text-white size-4" />
       </div>
       {attachments.length > 1 ? (
         <Slider {...carouselSettings} className="w-full" ref={sliderRef}>
@@ -85,7 +85,7 @@ export default function MediaCarousel({
         className="cursor-pointer absolute top-1/2 right-0 p-2 bg-primary rounded-full z-10 hover:opacity-80"
         onClick={() => sliderRef?.current?.slickNext()}
       >
-        <SquareArrowRight className="text-white size-4" />
+        <ArrowRight className="text-white size-4" />
       </div>
     </div>
   );
