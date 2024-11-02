@@ -34,19 +34,6 @@ export function formatRelativeDate(from: Date) {
   }
 }
 
-/**
- * As of 23rd Oct, 2024 - we are using the username as the display name for the user.
- * The username could have underscores or hyphens. So, when we are displaying the
- * display name, we will remove these special characters. We will use CSS styles to
- * capitalize the first letter of each word. So let this function be a simple one.
- *
- * ! TODO - Update the regex if we allow more special characters in the username.
- *
- */
-export const getSanitizedDisplayName = (displayName: string) => {
-  return displayName.split(/[_-]/).join(" ");
-};
-
 export function formatNumber(num: number) {
   // Format the number using the Intl.NumberFormat API with compact notation
   // This will convert large numbers into a more readable format, e.g., 1,200 becomes 1.2K

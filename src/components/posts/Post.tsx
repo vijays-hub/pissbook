@@ -30,7 +30,7 @@
 import { PostData, PostLikeData } from "@/lib/types";
 import Link from "next/link";
 import UserAvatar from "../UserAvatar";
-import { formatRelativeDate, getSanitizedDisplayName } from "@/lib/utils";
+import { formatRelativeDate } from "@/lib/utils";
 import { useSession } from "@/app/(main)/SessionProvider";
 import PostActionsMenu from "./PostActionsMenu";
 import Linkify from "../Linkify";
@@ -82,7 +82,7 @@ export default function Post({ post }: PostConfig) {
                 href={`/users/${post.user.username}`}
                 className="block font-medium hover:underline capitalize"
               >
-                {getSanitizedDisplayName(post.user.displayName)}
+                {post.user.displayName}
               </Link>
             </UserTooltip>
             <Link
