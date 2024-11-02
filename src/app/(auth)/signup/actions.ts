@@ -15,7 +15,7 @@ import { redirect } from "next/navigation";
 export async function signup(config: SignUpConfig): Promise<{ error: string }> {
   try {
     // Extra validation on the server, as the user can bypass the client-side validation.
-    const { email, username, password } = signupSchema.parse(config);
+    const { email, username, password, name } = signupSchema.parse(config);
 
     // Now the values are validated and safe to use.
 
@@ -61,7 +61,7 @@ export async function signup(config: SignUpConfig): Promise<{ error: string }> {
         id: userId,
         email,
         username,
-        displayName: username,
+        displayName: name,
         passwordHash,
       },
     });

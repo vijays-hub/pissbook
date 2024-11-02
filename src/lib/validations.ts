@@ -4,9 +4,10 @@ const requiredString = z.string().trim().min(1, "This field is required");
 
 export const signupSchema = z.object({
   email: requiredString.email("Invalid email address"),
+  name: requiredString.min(3, "Name must be at least 3 characters"),
   username: requiredString.regex(
-    /^[a-zA-Z0-9_-]+$/,
-    "Invalid Username! No special characters allowed, except for _ and -"
+    /^[a-zA-Z0-9._-]+$/,
+    "Invalid Username! No special characters allowed, except for underscore(_), period (.) and hyphens(-)"
   ),
   password: requiredString.min(8, "Password must be at least 8 characters"),
 });
