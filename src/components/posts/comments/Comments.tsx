@@ -10,6 +10,8 @@ import Comment from "./Comment";
  * Take a look a the For You feed component to digest what's happening here.
  *
  * src/app/(main)/ForYouFeed.tsx
+ * 
+ * TODO: Support for nested comments
  */
 export default function Comments({ post }: { post: PostData }) {
   const { data, fetchNextPage, hasNextPage, isFetching, status } =

@@ -4,8 +4,12 @@ import UserTooltip from "@/components/UserTooltip";
 import { CommentData } from "@/lib/types";
 import { formatRelativeDate } from "@/lib/utils";
 import Link from "next/link";
+import CommentActions from "./CommentActions";
 
+// TODO: Support for nested comments
 export default function Comment({ comment }: { comment: CommentData }) {
+  const { user } = useSession();
+
   return (
     <div className="group/comment flex gap-3 py-3">
       <span className="hidden sm:inline">
@@ -32,6 +36,14 @@ export default function Comment({ comment }: { comment: CommentData }) {
         </div>
         <div>{comment.content}</div>
       </div>
+
+      {/* We would want to allow actions only for the original author */}
+      {comment.user.id === user.id && (
+        <CommentActions
+          comment={comment}
+          className="ms-auto opacity-0 transition-opacity group-hover/comment:opacity-100"
+        />
+      )}
     </div>
   );
 }
