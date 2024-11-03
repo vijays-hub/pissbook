@@ -65,7 +65,7 @@ export type PostData = Prisma.PostGetPayload<{
   include: ReturnType<typeof getPostDataSelect>;
 }>;
 
-export function getCommentDataSelect(loggedInUserId: string) {
+export function getCommentDataInclude(loggedInUserId: string) {
   return {
     user: {
       select: getUserDataSelect(loggedInUserId),
@@ -74,7 +74,7 @@ export function getCommentDataSelect(loggedInUserId: string) {
 }
 
 export type CommentData = Prisma.CommentGetPayload<{
-  include: ReturnType<typeof getCommentDataSelect>;
+  include: ReturnType<typeof getCommentDataInclude>;
 }>;
 
 export interface CommentsPage {
