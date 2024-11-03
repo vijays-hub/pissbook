@@ -67,3 +67,44 @@ export function useSubmitCommentMutation(postId: string) {
 
   return mutation;
 }
+
+export function useDeleteCommentMutation() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: async (deletedComment) => {
+      const queryKey: QueryKey = ["comments", deletedComment.postId];
+
+      await queryClient.cancelQueries({ queryKey });
+
+      queryClient.setQueryData<InfiniteData<CommentsPage, string | null>>(
+        queryKey,
+        (oldData) => {
+          if (!oldData) return;
+
+          return {
+            pageParams: oldData.pageParams,
+            pages: oldData.pages.map((page) => ({
+              previousCursor: page.previousCursor,
+              comments: page.comments.filter((c) => c.id !== deletedComment.id),
+            })),
+          };
+        }
+      );
+
+      toast({
+        description: "Deleted your opinion",
+      });
+    },
+    onError(error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        description: "Failed to delete your opinion. Please try again.",
+      });
+    },
+  });
+
+  return mutation;
+}
