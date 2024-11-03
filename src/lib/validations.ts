@@ -27,6 +27,10 @@ export const createPostSchema = z.object({
     .array(z.string())
     .max(5, "You can upload at most 5 pissing files"),
 });
+
+export const createCommentSchema = z.object({
+  content: requiredString,
+});
 // Posts ---> END
 
 // Uploadthing ---> START
