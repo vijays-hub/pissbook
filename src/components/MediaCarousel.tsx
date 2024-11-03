@@ -64,29 +64,31 @@ export default function MediaCarousel({
 
   return (
     <div className="relative">
-      <div
-        className="cursor-pointer absolute top-1/2 left-0 p-2 bg-primary rounded-full z-10 hover:opacity-80"
-        onClick={() => sliderRef?.current?.slickPrev()}
-      >
-        <ArrowLeft className="text-white size-4" />
-      </div>
       {attachments.length > 1 ? (
-        <Slider {...carouselSettings} className="w-full" ref={sliderRef}>
-          {React.Children.toArray(
-            attachments.map((attachment) => (
-              <>{getAttachmentToRender(attachment)}</>
-            ))
-          )}
-        </Slider>
+        <>
+          <div
+            className="cursor-pointer absolute top-1/2 left-0 p-2 bg-primary rounded-full z-10 hover:opacity-80"
+            onClick={() => sliderRef?.current?.slickPrev()}
+          >
+            <ArrowLeft className="text-white size-4" />
+          </div>
+          <Slider {...carouselSettings} className="w-full" ref={sliderRef}>
+            {React.Children.toArray(
+              attachments.map((attachment) => (
+                <>{getAttachmentToRender(attachment)}</>
+              ))
+            )}
+          </Slider>
+          <div
+            className="cursor-pointer absolute top-1/2 right-0 p-2 bg-primary rounded-full z-10 hover:opacity-80"
+            onClick={() => sliderRef?.current?.slickNext()}
+          >
+            <ArrowRight className="text-white size-4" />
+          </div>
+        </>
       ) : (
         <>{getAttachmentToRender(attachments[0])}</>
       )}
-      <div
-        className="cursor-pointer absolute top-1/2 right-0 p-2 bg-primary rounded-full z-10 hover:opacity-80"
-        onClick={() => sliderRef?.current?.slickNext()}
-      >
-        <ArrowRight className="text-white size-4" />
-      </div>
     </div>
   );
 }
