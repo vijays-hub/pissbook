@@ -39,6 +39,8 @@ import React from "react";
 import PostLikeButton from "./PostLikeButton";
 import BookmarkButton from "./BookmarkButton";
 import MediaCarousel from "../MediaCarousel";
+import { MessageSquare } from "lucide-react";
+import Comments from "./comments/Comments";
 
 interface PostConfig {
   post: PostData;
@@ -47,10 +49,14 @@ interface PostConfig {
 export default function Post({ post }: PostConfig) {
   const { user } = useSession();
 
+  // Component Utils ---> START
+  const [expandComments, setExpandComments] = React.useState(false);
+
   const likesData: PostLikeData = {
     likes: post._count.likes,
     isLikedByUser: post.likes.length > 0,
   };
+  // Component Utils ---> END
 
   return (
     /**
@@ -154,7 +160,13 @@ export default function Post({ post }: PostConfig) {
 
       <hr className="text-muted-foreground" />
       <div className="flex justify-between gap-5">
-        <PostLikeButton postId={post.id} initialState={likesData} />
+        <div className="flex items-center gap-5">
+          <PostLikeButton postId={post.id} initialState={likesData} />
+          <CommentButton
+            post={post}
+            onClick={() => setExpandComments((prev) => !prev)}
+          />
+        </div>
         <BookmarkButton
           postId={post.id}
           initialState={{
@@ -164,6 +176,26 @@ export default function Post({ post }: PostConfig) {
           }}
         />
       </div>
+
+      {/* Comments */}
+      {expandComments && <Comments post={post} />}
     </article>
+  );
+}
+
+function CommentButton({
+  post,
+  onClick,
+}: {
+  post: PostData;
+  onClick: () => void;
+}) {
+  return (
+    <button onClick={onClick} className="flex items-center gap-2">
+      <MessageSquare className="size-5" />
+      <span className="text-sm font-medium tabular-nums">
+        {post._count.comments}
+      </span>
+    </button>
   );
 }

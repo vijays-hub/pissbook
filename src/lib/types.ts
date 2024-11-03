@@ -54,6 +54,7 @@ export function getPostDataSelect(loggedInUserId: string) {
     _count: {
       select: {
         likes: true,
+        comments: true,
       },
     },
   } satisfies Prisma.PostSelect; // Explore more on "satisfies" keyword in TypeScript -- https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#the-satisfies-operator
@@ -63,6 +64,28 @@ export function getPostDataSelect(loggedInUserId: string) {
 export type PostData = Prisma.PostGetPayload<{
   include: ReturnType<typeof getPostDataSelect>;
 }>;
+
+export function getCommentDataInclude(loggedInUserId: string) {
+  return {
+    user: {
+      select: getUserDataSelect(loggedInUserId),
+    },
+  } satisfies Prisma.CommentInclude;
+}
+
+export type CommentData = Prisma.CommentGetPayload<{
+  include: ReturnType<typeof getCommentDataInclude>;
+}>;
+
+export interface CommentsPage {
+  comments: CommentData[];
+  /**
+   * Because we are fetching comments in reverse order, meaning, the latest comment
+   * will be at the bottom. So, the previousCursor will be the cursor of the last
+   * comment in the list.
+   */
+  previousCursor: string | null;
+}
 
 export interface PostsPage {
   posts: PostData[];
