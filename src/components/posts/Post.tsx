@@ -149,13 +149,7 @@ export default function Post({ post }: PostConfig) {
 
       {/* TODO: Convert this to a carousel */}
       {!!post.attachments.length && (
-        <MediaCarousel
-          attachments={[
-            ...post.attachments,
-            ...post.attachments,
-            ...post.attachments,
-          ]}
-        />
+        <MediaCarousel attachments={post.attachments} />
       )}
 
       <hr className="text-muted-foreground" />
