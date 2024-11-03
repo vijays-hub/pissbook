@@ -39,6 +39,7 @@ model User {
   createdAt DateTime   @default(now())
   likes     Like[]
   bookmarks Bookmark[]
+  comments  Comment[]
 
   @@map("users") // we don't want the table to be called "User" in the database, instead we want it to be called "users"
 }
@@ -103,6 +104,7 @@ model Post {
   attachments Attachment[]
   likes       Like[]
   bookmarks   Bookmark[]
+  comments    Comment[]
 
   @@map("posts")
 }
@@ -164,4 +166,17 @@ model Bookmark {
 
   @@unique([userId, postId])
   @@map("bookmarks")
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  content String
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("comments")
 }
