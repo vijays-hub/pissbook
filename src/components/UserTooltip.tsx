@@ -17,7 +17,6 @@ import {
 import Link from "next/link";
 import UserAvatar from "./UserAvatar";
 import FollowButton from "./FollowButton";
-import { getSanitizedDisplayName } from "@/lib/utils";
 import Linkify from "./Linkify";
 import FollowerCount from "./FollowerCount";
 
@@ -53,7 +52,7 @@ export default function UserTooltip({ user, children }: UserTooltipConfig) {
             <div>
               <Link href={`/users/${user.username}`}>
                 <div className="text-lg font-semibold hover:underline">
-                  {getSanitizedDisplayName(user.displayName)}
+                  {user.displayName}
                 </div>
                 <div className="text-muted-foreground">@{user.username}</div>
               </Link>

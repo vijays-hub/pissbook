@@ -6,7 +6,6 @@ import UserAvatar from "@/components/UserAvatar";
 import UserTooltip from "@/components/UserTooltip";
 import prisma from "@/lib/prisma";
 import { getPostDataSelect, UserData } from "@/lib/types";
-import { getSanitizedDisplayName } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -39,7 +38,7 @@ export async function generateMetadata({
   const post = await getPost(postId, user.id);
 
   return {
-    title: `${getSanitizedDisplayName(post.user.displayName).toLocaleUpperCase()}: ${post.content.slice(0, 50)}...`,
+    title: `${post.user.displayName}: ${post.content.slice(0, 50)}...`,
   };
 }
 
@@ -85,8 +84,8 @@ async function UserInfoSidebar({ user }: { user: UserData }) {
         >
           <UserAvatar avatarUrl={user.avatarUrl} className="flex-none" />
           <div>
-            <p className="line-clamp-1 break-all font-semibold hover:underline capitalize">
-              {getSanitizedDisplayName(user.displayName)}
+            <p className="line-clamp-1 break-all font-semibold hover:underline">
+              {user.displayName}
             </p>
             <p className="line-clamp-1 break-all text-muted-foreground">
               @{user.username}

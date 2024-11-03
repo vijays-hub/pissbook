@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import UserAvatar from "@/components/UserAvatar";
 import prisma from "@/lib/prisma";
 import { FollowerInfo, getUserDataSelect, UserData } from "@/lib/types";
-import { formatNumber, getSanitizedDisplayName } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 import { formatDate } from "date-fns";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -68,10 +68,7 @@ export default async function ProfilePage({
 
         <div className="rounded-2xl bg-card p-5 shadow-sm">
           <h2 className="text-center text-xl font-bold">
-            <span className="capitalize">
-              {getSanitizedDisplayName(user.displayName)}
-            </span>{" "}
-            &apos;s pissing experience(s)
+            {user.displayName}&apos;s pissing experience(s)
           </h2>
         </div>
 
@@ -107,9 +104,7 @@ async function UserProfile({
       <div className="flex flex-wrap gap-3 sm:flex-nowrap">
         <div className="me-auto space-y-3">
           <div>
-            <h1 className="text-3xl font-bold capitalize">
-              {getSanitizedDisplayName(user.displayName)}
-            </h1>
+            <h1 className="text-3xl font-bold ">{user.displayName}</h1>
             <div className="text-muted-foreground">@{user.username}</div>
           </div>
 

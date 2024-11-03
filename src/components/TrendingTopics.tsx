@@ -14,7 +14,7 @@ import Link from "next/link";
 import { Suspense, use } from "react";
 import UserAvatar from "./UserAvatar";
 import { Button } from "./ui/button";
-import { formatNumber, getSanitizedDisplayName } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 import { unstable_cache } from "next/cache";
 import FollowButton from "./FollowButton";
 import { getUserDataSelect } from "@/lib/types";
@@ -80,7 +80,7 @@ async function FollowSuggestions() {
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
       <div className="text-xl font-bold">You may know:</div>
       {usersToFollow.map((user) => (
-        <div key={user.id} className="flex items-center justify-center gap-6">
+        <div key={user.id} className="flex items-center justify-between gap-6">
           <UserTooltip user={user}>
             <Link
               href={`/user/${user.username}`}
@@ -93,8 +93,8 @@ async function FollowSuggestions() {
               />
 
               <div>
-                <p className="line-clamp-1 break-all font-semibold hover:underline text-sm capitalize">
-                  {getSanitizedDisplayName(user.displayName)}
+                <p className="line-clamp-1 break-all font-semibold hover:underline text-sm">
+                  {user.displayName}
                 </p>
                 <p className="line-clamp-1 break-all text-muted-foreground text-xs">
                   @{user.username}

@@ -43,6 +43,7 @@ const SignUpForm = () => {
     resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
+      name: "",
       username: "",
       password: "",
     },
@@ -73,12 +74,32 @@ const SignUpForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
         <FormField
           control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Display Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Name to be displayed on your profile"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="username"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="Enter username" {...field} />
+                <Input
+                  placeholder="Unique username matching your style!"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
