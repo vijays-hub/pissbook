@@ -5,7 +5,7 @@ import { StreamChat } from "stream-chat";
 
 // ! Ref: https://getstream.io/chat/docs/react/tokens_and_authentication/
 const streamServerClient = StreamChat.getInstance(
-  process.env.STREAM_API_KEY!,
+  process.env.NEXT_PUBLIC_STREAM_API_KEY!,
   process.env.STREAM_API_SECRET!
 );
 
