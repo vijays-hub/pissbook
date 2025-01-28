@@ -79,6 +79,7 @@
 }
 
 /* ! Refer to the above link to know how these classes came up here! */
+/* !Fix: Dark theme is not working properly */
 .str-chat {
   --str-chat__font-family: inherit;
   --str-chat__primary-color: theme(colors.primary.DEFAULT);
