@@ -25,14 +25,34 @@ export async function submitComment({
 
   const { content: contentValidated } = createCommentSchema.parse({ content });
 
-  const newComment = await prisma.comment.create({
-    data: {
-      content: contentValidated,
-      postId: post.id,
-      userId: user.id,
-    },
-    include: getCommentDataInclude(user.id),
-  });
+  /**
+   * [UPDATE]: Notifications Feature
+   *
+   * Have a look at the POST endpoint of the post likes folder to see the intention behind using
+   * the transaction method.
+   */
+  const [newComment] = await prisma.$transaction([
+    prisma.comment.create({
+      data: {
+        content: contentValidated,
+        postId: post.id,
+        userId: user.id,
+      },
+      include: getCommentDataInclude(user.id),
+    }),
+    ...(post.user.id !== user.id
+      ? [
+          prisma.notification.create({
+            data: {
+              issuerId: user.id,
+              recipientId: post.user.id,
+              type: "COMMENT",
+              postId: post.id,
+            },
+          }),
+        ]
+      : []),
+  ]);
 
   return newComment;
 }

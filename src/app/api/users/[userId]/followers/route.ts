@@ -90,22 +90,37 @@ export async function POST(
      * record. If the user is not following the user, then we would create a new record.
      *
      * More on upsert: https://www.prisma.io/docs/orm/prisma-client/queries/crud#update-or-create-records
+     *
+     * [UPDATE]: Notifications feature
+     *
+     * Have a look at the POST endpoint in the likes folder to understand the need for transaction.
+     * src/app/api/posts/[postId]/likes/route.ts
      */
-    await prisma.follow.upsert({
-      where: {
-        // This is the unique constraint we defined in the Prisma schema for Follow model.
-        followerId_followingId: {
+    await prisma.$transaction([
+      prisma.follow.upsert({
+        where: {
+          // This is the unique constraint we defined in the Prisma schema for Follow model.
+          followerId_followingId: {
+            followerId: loggedInUser.id,
+            followingId: userId,
+          },
+        },
+        create: {
           followerId: loggedInUser.id,
           followingId: userId,
         },
-      },
-      create: {
-        followerId: loggedInUser.id,
-        followingId: userId,
-      },
-      // We are ignoring the update object because we don't need to update anything, as we are just following the user.
-      update: {},
-    });
+        // We are ignoring the update object because we don't need to update anything, as we are just following the user.
+        update: {},
+      }),
+
+      prisma.notification.create({
+        data: {
+          issuerId: loggedInUser.id,
+          recipientId: userId,
+          type: "FOLLOW",
+        },
+      }),
+    ]);
 
     return Response.json("Success", { status: 200 });
   } catch (error) {
@@ -141,13 +156,27 @@ export async function DELETE(
      * user multiple times. If we use delete method, then it would throw an error if the user is not
      * following the user. But, if we use deleteMany method, then it would just ignore the delete
      * operation if the user is not following the user.
+     *
+     * [UPDATE]: Notifications feature
+     *
+     * Have a look at the POST endpoint in the likes folder to understand the need for transaction.
+     * src/app/api/posts/[postId]/likes/route.ts
      */
-    await prisma.follow.deleteMany({
-      where: {
-        followerId: loggedInUser.id,
-        followingId: userId,
-      },
-    });
+    await prisma.$transaction([
+      prisma.follow.deleteMany({
+        where: {
+          followerId: loggedInUser.id,
+          followingId: userId,
+        },
+      }),
+      prisma.notification.deleteMany({
+        where: {
+          issuerId: loggedInUser.id,
+          recipientId: userId,
+          type: "FOLLOW",
+        },
+      }),
+    ]);
 
     return Response.json("Success", { status: 200 });
   } catch (error) {

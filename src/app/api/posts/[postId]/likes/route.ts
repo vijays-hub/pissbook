@@ -83,19 +83,44 @@ export async function POST(
       return Response.json({ error: "Post not found" }, { status: 404 });
     }
 
-    await prisma.like.upsert({
-      where: {
-        userId_postId: {
+    /**
+     * Why didn't we decouple both like and notification into separate queries?
+     *
+     * In theory, there can be cases where the like operation is successful but the
+     * notification operation fails, OR, vice versa. In such cases, the data will be
+     * inconsistent. Hence, wrapping them inside a transaction so that both operations
+     * succeed or fail together. This way, we can ensure data consistency, because,
+     * if one operation fails, the other operation will also be rolled back, and we see
+     * an error response.
+     */
+    await prisma.$transaction([
+      prisma.like.upsert({
+        where: {
+          userId_postId: {
+            userId: loggedInUser.id,
+            postId,
+          },
+        },
+        create: {
           userId: loggedInUser.id,
           postId,
         },
-      },
-      create: {
-        userId: loggedInUser.id,
-        postId,
-      },
-      update: {},
-    });
+        update: {},
+      }),
+      // Send a notification to the post owner
+      ...(loggedInUser.id !== post.userId
+        ? [
+            prisma.notification.create({
+              data: {
+                issuerId: loggedInUser.id,
+                recipientId: post.userId,
+                postId,
+                type: "LIKE",
+              },
+            }),
+          ]
+        : []),
+    ]);
 
     return new Response();
   } catch (error) {
@@ -123,12 +148,25 @@ export async function DELETE(
       return Response.json({ error: "Post not found" }, { status: 404 });
     }
 
-    await prisma.like.deleteMany({
-      where: {
-        userId: loggedInUser.id,
-        postId,
-      },
-    });
+    // Similar to the POST method, we are wrapping both the like and notification operations inside a transaction.
+    await prisma.$transaction([
+      // Delete the like
+      prisma.like.deleteMany({
+        where: {
+          userId: loggedInUser.id,
+          postId,
+        },
+      }),
+      // Delete the notification
+      prisma.notification.deleteMany({
+        where: {
+          issuerId: loggedInUser.id,
+          recipientId: post.userId,
+          postId,
+          type: "LIKE",
+        },
+      }),
+    ]);
 
     return new Response();
   } catch (error) {
