@@ -7,10 +7,13 @@ import { useSession } from "../SessionProvider";
 import { StreamChat } from "stream-chat";
 import kyInstance from "@/lib/ky";
 
-const useStreamChatClient = async () => {
+// TODO: Optimize the hook to avoid multiple connections to Stream Chat.
+const useStreamChatClient = () => {
   const { user } = useSession();
 
-  const [streamChatClient, setStreamChatClient] = useState<StreamChat | null>();
+  const [streamChatClient, setStreamChatClient] = useState<StreamChat | null>(
+    null
+  );
 
   useEffect(() => {
     if (!user) return;
