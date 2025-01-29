@@ -6,6 +6,7 @@
 
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
+import streamServerClient from "@/lib/stream";
 import { createUploadthing, FileRouter } from "uploadthing/next";
 import { UploadThingError, UTApi } from "uploadthing/server";
 
@@ -71,12 +72,33 @@ export const fileRouter = {
 
       const newAvatarUrl = generateSecureUrl(file.url);
 
-      await prisma.user.update({
-        where: { id: metadata.user.id },
-        data: {
-          avatarUrl: newAvatarUrl,
-        },
-      });
+      /**
+       * Take a look here: src/app/(auth)/signup/actions.ts, to understand what's
+       * happening here.
+       *
+       * Notice that we are not using prisma transaction here. This is because it
+       * doesn't make sense to rollback the user's avatar update just because the
+       * StreamChat update failed. We can live with the user having an updated avatar,
+       * since the stream chat will have the updated avatar when the user logs in next time
+       * or on a new session.
+       *
+       * So, we are using Promise.all to execute both the prisma update and the stream chat
+       * update in parallel.
+       */
+      await Promise.all([
+        await prisma.user.update({
+          where: { id: metadata.user.id },
+          data: {
+            avatarUrl: newAvatarUrl,
+          },
+        }),
+        await streamServerClient.partialUpdateUser({
+          id: metadata.user.id,
+          set: {
+            image: newAvatarUrl,
+          },
+        }),
+      ]);
 
       return { avatarUrl: newAvatarUrl };
     }),
