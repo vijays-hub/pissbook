@@ -1,8 +1,13 @@
-import { ChannelList } from "stream-chat-react";
+import {
+  ChannelList,
+  ChannelPreviewMessenger,
+  ChannelPreviewUIComponentProps,
+} from "stream-chat-react";
 import { useSession } from "../SessionProvider";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCallback } from "react";
 
 /**
  * ! https://getstream.io/chat/docs/sdk/react/components/core-components/channel_list/
@@ -26,6 +31,29 @@ export default function ChatSidebar({
   toggleSidebar: () => void;
 }) {
   const { user } = useSession();
+
+  /**
+   * Adding a custom channel preview to have the ability to select a channel,
+   * hide the sidebar and show the messages in smaller screens.
+   *
+   * Putting it inside a useCallback to avoid re-rendering the component, unless
+   * the toggleSidebar function changes.
+   */
+  const CustomChannelPreview = useCallback(
+    (props: ChannelPreviewUIComponentProps) => {
+      return (
+        // https://getstream.io/chat/docs/sdk/react/components/utility-components/channel_preview_ui/
+        <ChannelPreviewMessenger
+          {...props}
+          onSelect={() => {
+            props.setActiveChannel?.(props.channel, props.watchers);
+            toggleSidebar();
+          }}
+        />
+      );
+    },
+    [toggleSidebar]
+  );
 
   return (
     <div
@@ -60,6 +88,7 @@ export default function ChatSidebar({
             },
           },
         }}
+        Preview={CustomChannelPreview}
       />
     </div>
   );
