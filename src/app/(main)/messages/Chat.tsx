@@ -6,12 +6,17 @@ import { Chat as StreamChat } from "stream-chat-react";
 import ChatSidebar from "./Sidebar";
 import ChatChannel from "./ChatChannel";
 import { useTheme } from "next-themes";
+import { useState } from "react";
 
 // ! https://getstream.io/chat/docs/sdk/react/basics/getting_started/#your-first-app-with-stream-chat-react
 export default function ChatInit() {
   const chatClient = useStreamChatClient();
 
   const { resolvedTheme } = useTheme();
+
+  // Component Utils ---> START
+  const [showSidebar, setShowSidebar] = useState(false);
+  // Component Utils ---> END
 
   if (!chatClient) return <Loader2 className="mx-auto my-3 animate-spin" />;
 
@@ -27,8 +32,14 @@ export default function ChatInit() {
               : "str-chat__theme-light"
           }
         >
-          <ChatSidebar />
-          <ChatChannel />
+          <ChatSidebar
+            showSidebar={showSidebar}
+            toggleSidebar={() => setShowSidebar(!showSidebar)}
+          />
+          <ChatChannel
+            showChannel={!showSidebar}
+            toggleSidebar={() => setShowSidebar(true)}
+          />
         </StreamChat>
       </div>
     </main>
